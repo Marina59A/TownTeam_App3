@@ -5,6 +5,9 @@ class Product {
   final double discountedPrice;
   final String imageUrl;
   final String category;
+  final String? selectedSize;
+  final String? selectedColor;
+  final int? quantity;
 
   Product({
     required this.id,
@@ -13,5 +16,8 @@ class Product {
     required this.discountedPrice,
     required this.imageUrl,
     required this.category,
+    this.selectedSize,
+    this.selectedColor,
+    this.quantity,
   });
 }

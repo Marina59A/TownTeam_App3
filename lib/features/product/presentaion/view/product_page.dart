@@ -7,9 +7,16 @@ import 'package:townteam_app/common/models/product.dart';
 import 'package:townteam_app/features/auth/presentation/view/login_page.dart';
 
 class ProductPage extends StatefulWidget {
-  final String category;
+  // final String category;
+  final String subcategory;
+  final String path;
+  final String title;
 
-  const ProductPage({super.key, required this.category});
+  const ProductPage(
+      {super.key,
+      required this.subcategory,
+      required this.path,
+      required this.title});
 
   @override
   State<ProductPage> createState() => _ProductPageState();
@@ -19,13 +26,12 @@ class _ProductPageState extends State<ProductPage> {
   @override
   void initState() {
     super.initState();
-    // Move the provider update to initState with a post-frame callback
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         Provider.of<NavProvider>(
           context,
           listen: false,
-        ).setTitle(widget.category.toUpperCase());
+        ).setTitle(widget.title.toUpperCase());
       }
     });
   }
@@ -41,7 +47,7 @@ class _ProductPageState extends State<ProductPage> {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          widget.category.toUpperCase(),
+          widget.title.toUpperCase(),
           style: const TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -71,20 +77,20 @@ class _ProductPageState extends State<ProductPage> {
                     return cartProvider.items.isEmpty
                         ? const SizedBox()
                         : Container(
-                          padding: const EdgeInsets.all(4),
-                          decoration: const BoxDecoration(
-                            color: Colors.red,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Text(
-                            '${cartProvider.items.length}',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
+                            padding: const EdgeInsets.all(4),
+                            decoration: const BoxDecoration(
+                              color: Colors.red,
+                              shape: BoxShape.circle,
                             ),
-                          ),
-                        );
+                            child: Text(
+                              '${cartProvider.items.length}',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          );
                   },
                 ),
               ),
@@ -93,12 +99,10 @@ class _ProductPageState extends State<ProductPage> {
         ],
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream:
-            FirebaseFirestore.instance
-                .collection('men')
-                .doc('closes')
-                .collection('Boys Jackets')
-                .snapshots(),
+        stream: FirebaseFirestore.instance
+            .doc(widget.path)
+            .collection(widget.subcategory)
+            .snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
@@ -146,12 +150,11 @@ class _ProductPageState extends State<ProductPage> {
                   top: Radius.circular(15),
                 ),
                 image: DecorationImage(
-                  image:
-                      productData['image'] != null &&
-                              productData['image']['src'] != null
-                          ? NetworkImage('https:${productData['image']['src']}')
-                          : const AssetImage('assets/placeholder_image.png')
-                              as ImageProvider,
+                  image: productData['image'] != null &&
+                          productData['image']['src'] != null
+                      ? NetworkImage('https:${productData['image']['src']}')
+                      : const AssetImage('assets/placeholder_image.png')
+                          as ImageProvider,
                   fit: BoxFit.cover,
                 ),
               ),
@@ -191,22 +194,17 @@ class _ProductPageState extends State<ProductPage> {
                       var product = Product(
                         id: productData.id,
                         name: productData['title'] ?? 'No Title',
-                        originalPrice:
-                            productData['price'] != null
-                                ? productData['price']['amount']?.toDouble() ??
-                                    0.0
-                                : 0.0,
-                        discountedPrice:
-                            productData['price'] != null
-                                ? productData['price']['amount']?.toDouble() ??
-                                    0.0
-                                : 0.0,
-                        imageUrl:
-                            productData['image'] != null &&
-                                    productData['image']['src'] != null
-                                ? 'https:${productData['image']['src']}'
-                                : '',
-                        category: widget.category,
+                        originalPrice: productData['price'] != null
+                            ? productData['price']['amount']?.toDouble() ?? 0.0
+                            : 0.0,
+                        discountedPrice: productData['price'] != null
+                            ? productData['price']['amount']?.toDouble() ?? 0.0
+                            : 0.0,
+                        imageUrl: productData['image'] != null &&
+                                productData['image']['src'] != null
+                            ? 'https:${productData['image']['src']}'
+                            : '',
+                        category: widget.title,
                       );
 
                       Provider.of<CartProvider>(

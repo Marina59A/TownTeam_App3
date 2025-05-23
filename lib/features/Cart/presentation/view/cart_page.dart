@@ -2,11 +2,43 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:townteam_app/common/models/auth_provider.dart';
 import 'package:townteam_app/common/models/cart_provider.dart';
-import 'package:townteam_app/features/auth/presentation/view/login_page.dart';
+import 'package:townteam_app/common/services/paypal.dart';
 import 'package:townteam_app/features/payment/presentation/view/payment_page.dart';
+import 'package:townteam_app/features/auth/presentation/view/login_page.dart';
 
-class CartPage extends StatelessWidget {
+class CartPage extends StatefulWidget {
   const CartPage({super.key});
+
+  @override
+  State<CartPage> createState() => _CartPageState();
+}
+
+class _CartPageState extends State<CartPage> {
+  Future<void> startPayPalCheckout(List cartItems) async {
+    final token = await PayPalService.getAccessToken();
+    if (token == null || !mounted) return;
+
+    final total = cartItems.fold<double>(
+      0,
+      (sum, item) => sum + (item.product.discountedPrice * item.quantity),
+    );
+
+    final orderId = await PayPalService.createOrder(
+      token,
+      total.toStringAsFixed(2),
+    );
+    if (orderId == null || !mounted) return;
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => PaymentPage(
+          checkoutUrl:
+              "https://www.sandbox.paypal.com/checkoutnow?token=$orderId",
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,8 +55,8 @@ class CartPage extends StatelessWidget {
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
-      body: Consumer<CartProvider>(
-        builder: (context, cartProvider, child) {
+      body: Consumer2<CartProvider, AuthProvider>(
+        builder: (context, cartProvider, authProvider, child) {
           if (cartProvider.items.isEmpty) {
             return const Center(
               child: Text('Your cart is empty', style: TextStyle(fontSize: 18)),
@@ -132,12 +164,8 @@ class CartPage extends StatelessWidget {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
-                          final authProvider = Provider.of<AuthProvider>(
-                            context,
-                            listen: false,
-                          );
                           if (authProvider.isLoggedIn) {
-                            Navigator.pushNamed(context, PaymentPage.id);
+                            startPayPalCheckout(cartItems);
                           } else {
                             Navigator.pushNamed(context, LoginPage.id);
                           }
@@ -151,12 +179,13 @@ class CartPage extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           child: Text(
-                            Provider.of<AuthProvider>(context).isLoggedIn
+                            authProvider.isLoggedIn
                                 ? 'CHECKOUT'
                                 : 'LOGIN TO CHECKOUT',
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
+                              color: Colors.white,
                             ),
                           ),
                         ),

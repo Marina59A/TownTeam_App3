@@ -35,34 +35,34 @@ class TownTeamApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AuthProvider()),
       ],
       child: MaterialApp(
-        title: 'TownTeam App',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        ),
-        debugShowCheckedModeBanner: false,
-        routes: {
-          '/landing': (context) => const LandingPage(),
-          '/home': (context) => HomePage(),
-          '/cart': (context) => const CartPage(),
-          LoginPage.id: (context) => const LoginPage(),
-          SignupView.id: (context) => const SignupView(),
-          PaymentPage.id: (context) => const PaymentPage(),
-          MensCatogry.id: (context) => const MensCatogry(),
-          KidsCatogry.id: (context) => const KidsCatogry(),
-        },
-        initialRoute: '/landing',
-        onGenerateRoute: (settings) {
-          if (settings.name == '/product') {
-            final category = settings.arguments is String
-                ? settings.arguments as String
-                : 'Unknown';
-            return MaterialPageRoute(
-              builder: (context) => ProductPage(category: category),
-            );
-          }
-          return null;
-        },
-      ),
+          title: 'TownTeam App',
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          ),
+          debugShowCheckedModeBanner: false,
+          routes: {
+            '/landing': (context) => const LandingPage(),
+            '/home': (context) => HomePage(),
+            '/cart': (context) => const CartPage(),
+            LoginPage.id: (context) => const LoginPage(),
+            SignupView.id: (context) => const SignupView(),
+            MensCatogry.id: (context) => const MensCatogry(),
+            KidsCatogry.id: (context) => const KidsCatogry(),
+          },
+          initialRoute: '/landing',
+          onGenerateRoute: (settings) {
+            if (settings.name == '/product') {
+              final args = settings.arguments as Map<String, dynamic>;
+              return MaterialPageRoute(
+                builder: (context) => ProductPage(
+                  path: args['path']!,
+                  subcategory: args['subcategory']!,
+                  title: args['title']!,
+                ),
+              );
+            }
+            return null;
+          }),
     );
   }
 }

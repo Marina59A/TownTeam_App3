@@ -2,18 +2,49 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:townteam_app/common/models/cart_provider.dart';
 import 'package:townteam_app/features/auth/presentation/view/login_page.dart';
+import 'package:townteam_app/features/homepage/presentation/widgets/homepage_widget.dart';
 import '../widgets/custom_drawer.dart';
 
 class HomePage extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  final List<Map<String, dynamic>> categories = [
-    {'name': "Men's\nCollection", 'icon': Icons.person},
-    {'name': 'Apparel-\nKids', 'icon': Icons.child_care},
-    {'name': 'New\nArrival', 'icon': Icons.new_releases},
-    {'name': 'Winter\n2025', 'icon': Icons.ac_unit},
-  ];
+  // final List<Map<String, dynamic>> categories = [
+  //   {'name': "Men's\nCollection", 'icon': Icons.person,},
+  //   {'name': 'Apparel-\nKids', 'icon': Icons.child_care},
+  //   {'name': 'New\nArrival', 'icon': Icons.new_releases},
+  //   {'name': 'Winter\n2025', 'icon': Icons.ac_unit},
+  // ];
 
+  final List<Map<String, dynamic>> categories = [
+    {
+      'name': "Men's\nCollection",
+      'icon': Icons.person,
+      'path': 'men/closes',
+      'subcategory': 'Boys Jackets',
+      'title': 'Men'
+    },
+    {
+      'name': 'Apparel-\nKids',
+      'icon': Icons.child_care,
+      'path': 'kids/closes',
+      'subcategory': 'Boys Jackets',
+      'title': 'Kids'
+    },
+    {
+      'name': 'New\nArrival',
+      'icon': Icons.new_releases,
+      'path': 'newarrival/newarrival',
+      'subcategory': 'Men Jackets',
+      'title': 'New Arrival'
+    },
+    {
+      'name': 'Winter\n2025',
+      'icon': Icons.ac_unit,
+      'path': 'winter/winter',
+      'subcategory': 'Men Jackets',
+      'title': 'Winter'
+    },
+  ];
   HomePage({super.key});
 
   @override
@@ -118,70 +149,79 @@ class HomePage extends StatelessWidget {
                     .toList(),
               ),
             ),
+            const SizedBox(height: 16),
+            HomePageWidget(),
             // Unique Pick Banner
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.pushNamed(
-                    context,
-                    '/product',
-                    arguments: 'unique_pick',
-                  );
-                },
-                child: Container(
-                  width: double.infinity,
-                  height: 400,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: Colors.pink[100],
-                  ),
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        child: Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.bottomCenter,
-                              end: Alignment.topCenter,
-                              colors: [
-                                Colors.black.withOpacity(0.8),
-                                Colors.transparent,
-                              ],
-                            ),
-                          ),
-                          child: const Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'UNIQUE PICK',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                '40% OFF',
-                                style: TextStyle(
-                                  color: Colors.yellow,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.all(16),
+            //   child: GestureDetector(
+            //     onTap: () {
+            //       // Use the first category as the banner's category, or define a dedicated one
+            //       final bannerCategory = categories[0];
+            //       Navigator.pushNamed(
+            //         context,
+            //         '/product',
+            //         arguments: {
+            //           'path': bannerCategory['path'],
+            //           'subcategory': bannerCategory['subcategory'],
+            //           'title': bannerCategory['name'].split('\n')[0],
+            //         },
+            //       );
+            //     },
+            //     child: HomePageWidget(),
+            //     // child: Container(
+            //     //   width: double.infinity,
+            //     //   height: 400,
+            //     //   decoration: BoxDecoration(
+            //     //     borderRadius: BorderRadius.circular(8),
+            //     //     color: Colors.pink[100],
+            //     //   ),
+            //     //   child: Stack(
+            //     //     children: [
+            //     //       Positioned(
+            //     //         bottom: 0,
+            //     //         left: 0,
+            //     //         right: 0,
+            //     //         child: Container(
+            //     //           padding: const EdgeInsets.all(16),
+            //     //           decoration: BoxDecoration(
+            //     //             gradient: LinearGradient(
+            //     //               begin: Alignment.bottomCenter,
+            //     //               end: Alignment.topCenter,
+            //     //               colors: [
+            //     //                 Colors.black.withOpacity(0.8),
+            //     //                 Colors.transparent,
+            //     //               ],
+            //     //             ),
+            //     //           ),
+            //     //           child: const Column(
+            //     //             crossAxisAlignment: CrossAxisAlignment.start,
+            //     //             children: [
+            //     //               Text(
+            //     //                 'UNIQUE PICK',
+            //     //                 style: TextStyle(
+            //     //                   color: Colors.white,
+            //     //                   fontSize: 24,
+            //     //                   fontWeight: FontWeight.bold,
+            //     //                 ),
+            //     //               ),
+            //     //               Text(
+            //     //                 '40% OFF',
+            //     //                 style: TextStyle(
+            //     //                   color: Colors.yellow,
+            //     //                   fontSize: 20,
+            //     //                   fontWeight: FontWeight.bold,
+            //     //                 ),
+            //     //               ),
+            //     //             ],
+            //     //           ),
+            //     //         ),
+            //     //       ),
+            //     //     ],
+            //     //   ),
+            //     // ),
+            //   ),
+            // ),
           ],
         ),
       ),
@@ -197,7 +237,11 @@ class HomePage extends StatelessWidget {
         Navigator.pushNamed(
           context,
           '/product',
-          arguments: category['name'].split('\n')[0],
+          arguments: {
+            'path': category['path'],
+            'subcategory': category['subcategory'],
+            'title': category['title'],
+          },
         );
       },
       child: Column(
