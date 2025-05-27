@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:townteam_app/common/models/auth_provider.dart';
 import 'package:townteam_app/common/models/cart_provider.dart';
+import 'package:townteam_app/common/models/language_provider.dart';
 import 'package:townteam_app/common/models/nav_provider.dart';
 import 'package:townteam_app/common/services/git_it_service.dart';
 import 'package:townteam_app/features/Cart/presentation/view/cart_page.dart';
@@ -14,6 +16,7 @@ import 'package:townteam_app/features/product/presentaion/view/product_page.dart
 import 'package:townteam_app/features/splashScreen/presentation/view/landing_page.dart';
 import 'package:townteam_app/features/auth/presentation/view/login_page.dart';
 import 'package:townteam_app/features/payment/presentation/view/payment_page.dart';
+import 'package:townteam_app/l10n/app_localizations.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -33,36 +36,53 @@ class TownTeamApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => NavProvider()),
         ChangeNotifierProvider(create: (_) => CartProvider()),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => LanguageProvider()),
       ],
-      child: MaterialApp(
-          title: 'TownTeam App',
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          ),
-          debugShowCheckedModeBanner: false,
-          routes: {
-            '/landing': (context) => const LandingPage(),
-            '/home': (context) => HomePage(),
-            '/cart': (context) => const CartPage(),
-            LoginPage.id: (context) => const LoginPage(),
-            SignupView.id: (context) => const SignupView(),
-            MensCatogry.id: (context) => const MensCatogry(),
-            KidsCatogry.id: (context) => const KidsCatogry(),
-          },
-          initialRoute: '/landing',
-          onGenerateRoute: (settings) {
-            if (settings.name == '/product') {
-              final args = settings.arguments as Map<String, dynamic>;
-              return MaterialPageRoute(
-                builder: (context) => ProductPage(
-                  path: args['path']!,
-                  subcategory: args['subcategory']!,
-                  title: args['title']!,
-                ),
-              );
-            }
-            return null;
-          }),
+      child: Consumer<LanguageProvider>(
+        builder: (context, languageProvider, child) {
+          return MaterialApp(
+            title: 'TownTeam App',
+            theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+            ),
+            locale: languageProvider.currentLocale,
+            supportedLocales: const [
+              Locale('en'),
+              Locale('ar'),
+            ],
+            localizationsDelegates: [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            debugShowCheckedModeBanner: false,
+            routes: {
+              '/landing': (context) => const LandingPage(),
+              '/home': (context) => HomePage(),
+              '/cart': (context) => const CartPage(),
+              LoginPage.id: (context) => const LoginPage(),
+              SignupView.id: (context) => const SignupView(),
+              MensCatogry.id: (context) => const MensCatogry(),
+              KidsCatogry.id: (context) => const KidsCatogry(),
+            },
+            initialRoute: '/landing',
+            onGenerateRoute: (settings) {
+              if (settings.name == '/product') {
+                final args = settings.arguments as Map<String, dynamic>;
+                return MaterialPageRoute(
+                  builder: (context) => ProductPage(
+                    path: args['path']!,
+                    subcategory: args['subcategory']!,
+                    title: args['title']!,
+                  ),
+                );
+              }
+              return null;
+            },
+          );
+        },
+      ),
     );
   }
 }

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:townteam_app/features/homepage/presentation/pages/kids_page.dart';
 import 'package:townteam_app/features/homepage/presentation/pages/mens_shirt_page.dart';
+import 'package:townteam_app/features/homepage/presentation/pages/mens_trousers.dart';
 import 'package:townteam_app/features/homepage/presentation/pages/mens_tshirts_page.dart';
-
 
 class HomePageWidget extends StatelessWidget {
   const HomePageWidget({super.key});
@@ -24,7 +24,7 @@ class HomePageWidget extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         SizedBox(
-          height: 200, 
+          height: 200,
           child: StreamBuilder<QuerySnapshot>(
             stream: FirebaseFirestore.instance
                 .collection('summer')
@@ -42,19 +42,19 @@ class HomePageWidget extends StatelessWidget {
                 return const Center(child: Text('No items found'));
               }
               return ListView.builder(
-                scrollDirection: Axis.horizontal, 
+                scrollDirection: Axis.horizontal,
                 itemCount: snapshot.data!.docs.length,
                 itemBuilder: (context, index) {
                   var product = snapshot.data!.docs[index];
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: Image.network(
-                      'https:${product['image']['src']}', 
+                      'https:${product['image']['src']}',
                       width: 150,
-                      height: 200, 
+                      height: 200,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
-                        return const Icon(Icons.error); 
+                        return const Icon(Icons.error);
                       },
                     ),
                   );
@@ -68,14 +68,14 @@ class HomePageWidget extends StatelessWidget {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) =>const MensTShirtsPage()),
+              MaterialPageRoute(builder: (context) => const MensTShirtsPage()),
             );
           },
           child: Image.asset('assets/images/t-shirt.jpg'),
         ),
         const SizedBox(height: 10),
-         SizedBox(
-          height: 200, 
+        SizedBox(
+          height: 200,
           child: StreamBuilder<QuerySnapshot>(
             stream: FirebaseFirestore.instance
                 .collection('summer')
@@ -93,19 +93,19 @@ class HomePageWidget extends StatelessWidget {
                 return const Center(child: Text('No items found'));
               }
               return ListView.builder(
-                scrollDirection: Axis.horizontal, 
+                scrollDirection: Axis.horizontal,
                 itemCount: snapshot.data!.docs.length,
                 itemBuilder: (context, index) {
                   var product = snapshot.data!.docs[index];
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: Image.network(
-                      'https:${product['image']['src']}', 
+                      'https:${product['image']['src']}',
                       width: 150,
-                      height: 200, 
+                      height: 200,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
-                        return const Icon(Icons.error); 
+                        return const Icon(Icons.error);
                       },
                     ),
                   );
@@ -125,8 +125,8 @@ class HomePageWidget extends StatelessWidget {
           child: Image.asset('assets/images/kids_collection.jpg'),
         ),
         const SizedBox(height: 10),
-         SizedBox(
-          height: 200, 
+        SizedBox(
+          height: 200,
           child: StreamBuilder<QuerySnapshot>(
             stream: FirebaseFirestore.instance
                 .collection('kids')
@@ -144,19 +144,19 @@ class HomePageWidget extends StatelessWidget {
                 return const Center(child: Text('No items found'));
               }
               return ListView.builder(
-                scrollDirection: Axis.horizontal, 
+                scrollDirection: Axis.horizontal,
                 itemCount: snapshot.data!.docs.length,
                 itemBuilder: (context, index) {
                   var product = snapshot.data!.docs[index];
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: Image.network(
-                      'https:${product['image']['src']}', 
+                      'https:${product['image']['src']}',
                       width: 150,
-                      height: 200, 
+                      height: 200,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
-                        return const Icon(Icons.error); 
+                        return const Icon(Icons.error);
                       },
                     ),
                   );
@@ -166,7 +166,16 @@ class HomePageWidget extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 10),
-        Image.asset('assets/images/denim_collection.jpg'),
+        GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const MensJeansPage()),
+            );
+          },
+          child: Image.asset('assets/images/denim_collection.jpg'),
+        ),
+        // Image.asset('assets/images/denim_collection.jpg'),
       ],
     );
   }

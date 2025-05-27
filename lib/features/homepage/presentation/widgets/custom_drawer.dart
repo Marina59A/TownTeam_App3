@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:townteam_app/common/models/language_provider.dart';
 import 'package:townteam_app/features/auth/presentation/view/login_page.dart';
+import 'package:townteam_app/l10n/app_localizations.dart';
+// import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Drawer(
       backgroundColor: Colors.black,
       child: Column(
@@ -32,12 +37,12 @@ class CustomDrawer extends StatelessWidget {
                 const SizedBox(height: 20),
                 _buildDrawerItem(
                   icon: Icons.home_outlined,
-                  title: 'HOME',
+                  title: l10n.Home,
                   onTap: () => Navigator.pushNamed(context, '/home'),
                 ),
                 _buildDrawerItem(
                   icon: Icons.person_outline,
-                  title: 'MENS',
+                  title: l10n.MENS,
                   onTap: () => Navigator.pushNamed(
                     context,
                     '/product',
@@ -46,7 +51,7 @@ class CustomDrawer extends StatelessWidget {
                 ),
                 _buildDrawerItem(
                   icon: Icons.child_care,
-                  title: 'KIDS',
+                  title: l10n.KIDS,
                   onTap: () => Navigator.pushNamed(
                     context,
                     '/product',
@@ -55,7 +60,7 @@ class CustomDrawer extends StatelessWidget {
                 ),
                 _buildDrawerItem(
                   icon: Icons.wb_sunny_outlined,
-                  title: 'SUMMER COLLECTION',
+                  title: l10n.SUMMER_COLLECTION,
                   onTap: () => Navigator.pushNamed(
                     context,
                     '/product',
@@ -64,7 +69,7 @@ class CustomDrawer extends StatelessWidget {
                 ),
                 _buildDrawerItem(
                   icon: Icons.new_releases_outlined,
-                  title: 'WINTER CLEARANCE',
+                  title: l10n.WINTER_COLLECTION,
                   onTap: () => Navigator.pushNamed(
                     context,
                     '/product',
@@ -73,7 +78,7 @@ class CustomDrawer extends StatelessWidget {
                 ),
                 _buildDrawerItem(
                   icon: Icons.local_offer_outlined,
-                  title: 'PROMOTIONS',
+                  title: l10n.PROMOTIONS,
                   onTap: () => Navigator.pushNamed(
                     context,
                     '/product',
@@ -82,17 +87,18 @@ class CustomDrawer extends StatelessWidget {
                 ),
                 _buildDrawerItem(
                   icon: Icons.person_outline,
-                  title: 'MY ACCOUNT',
+                  title: l10n.MY_ACCOUNT,
                   onTap: () => Navigator.pushNamed(context, LoginPage.id),
                 ),
                 _buildExpandableDrawerItem(
                   icon: Icons.support_agent,
-                  title: 'CUSTOMER SERVICE',
+                  title: l10n.CUSTOMER_SERVICE,
                   children: [
-                    _buildSubDrawerItem(title: 'CONTACT US', onTap: () {}),
-                    _buildSubDrawerItem(title: 'HOW TO PURCHASE', onTap: () {}),
+                    _buildSubDrawerItem(title: l10n.CONTACT_US, onTap: () {}),
                     _buildSubDrawerItem(
-                      title: 'DELIVERY AND RETURNS',
+                        title: l10n.HOW_TO_PURCHASE, onTap: () {}),
+                    _buildSubDrawerItem(
+                      title: l10n.DELIVERY_AND_RETURNS,
                       onTap: () {},
                     ),
                   ],
@@ -109,17 +115,17 @@ class CustomDrawer extends StatelessWidget {
                   children: [
                     TextButton(
                       onPressed: () {},
-                      child: const Text(
-                        'FACEBOOK',
-                        style: TextStyle(color: Colors.white),
+                      child: Text(
+                        l10n.FACEBOOK,
+                        style: const TextStyle(color: Colors.white),
                       ),
                     ),
                     const Text(' · ', style: TextStyle(color: Colors.white)),
                     TextButton(
                       onPressed: () {},
-                      child: const Text(
-                        'EMAIL',
-                        style: TextStyle(color: Colors.white),
+                      child: Text(
+                        l10n.EMAIL,
+                        style: const TextStyle(color: Colors.white),
                       ),
                     ),
                   ],
@@ -127,13 +133,25 @@ class CustomDrawer extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('English, EGP',
-                        style: TextStyle(color: Colors.white)),
+                    Text(
+                      Provider.of<LanguageProvider>(context)
+                                  .currentLocale
+                                  .languageCode ==
+                              'en'
+                          ? 'English, EGP'
+                          : 'العربية, ج.م',
+                      style: const TextStyle(color: Colors.white),
+                    ),
                     TextButton(
-                      onPressed: () {},
-                      child: const Text(
-                        'Change',
-                        style: TextStyle(color: Colors.white),
+                      onPressed: () {
+                        final languageProvider = Provider.of<LanguageProvider>(
+                            context,
+                            listen: false);
+                        languageProvider.toggleLanguage();
+                      },
+                      child: Text(
+                        l10n.Change,
+                        style: const TextStyle(color: Colors.white),
                       ),
                     ),
                   ],
