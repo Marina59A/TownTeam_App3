@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:townteam_app/common/models/cart_provider.dart';
+import 'package:townteam_app/common/models/favorites_provider.dart';
 import 'package:townteam_app/common/models/product.dart';
+
 // import 'package:carousel_slider/carousel_controller.dart';
 class ProductDetailsPage extends StatefulWidget {
   final Product product;
   final String? imageUrl;
-  final List<String>? additionalImages;
+  // final List<String>? additionalImages;
 
   const ProductDetailsPage({
-    Key? key,
+    super.key,
     required this.product,
     this.imageUrl,
-    this.additionalImages,
-  }) : super(key: key);
+    // this.additionalImages,
+  });
 
   @override
   State<ProductDetailsPage> createState() => _ProductDetailsPageState();
@@ -35,11 +36,6 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    List<String> images = [
-      widget.imageUrl ?? widget.product.imageUrl,
-      if (widget.additionalImages != null) ...widget.additionalImages!,
-    ];
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
@@ -47,6 +43,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
+        title: const Text('TOWN TEAM', style: TextStyle(color: Colors.white)),
+        centerTitle: true,
         actions: [
           Stack(
             children: [
@@ -88,53 +86,48 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Image Carousel
-            CarouselSlider(
-              options: CarouselOptions(
-                height: 400,
-                viewportFraction: 1.0,
-                onPageChanged: (index, reason) {
-                  setState(() {
-                    currentImageIndex = index;
-                  });
-                },
-              ),
-              items: images.map((imageUrl) {
-                return Builder(
-                  builder: (BuildContext context) {
-                    return Container(
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: NetworkImage(imageUrl),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    );
-                  },
-                );
-              }).toList(),
-            ),
-
-            // Dots Indicator
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: images.asMap().entries.map((entry) {
-                return Container(
-                  width: 8.0,
-                  height: 8.0,
-                  margin: const EdgeInsets.symmetric(
-                    vertical: 10.0,
-                    horizontal: 4.0,
-                  ),
+            // Product Image with Favorite Button
+            Stack(
+              children: [
+                Container(
+                  height: 400,
+                  width: double.infinity,
                   decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: currentImageIndex == entry.key
-                        ? Colors.black
-                        : Colors.grey.shade400,
+                    image: DecorationImage(
+                      image: NetworkImage(
+                          widget.imageUrl ?? widget.product.imageUrl),
+                      fit: BoxFit.cover,
+                    ),
                   ),
-                );
-              }).toList(),
+                ),
+                Positioned(
+                  top: 16,
+                  right: 16,
+                  child: Consumer<FavoritesProvider>(
+                    builder: (context, favoritesProvider, child) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.8),
+                          shape: BoxShape.circle,
+                        ),
+                        child: IconButton(
+                          icon: Icon(
+                            favoritesProvider.isFavorite(widget.product.id)
+                                ? Icons.favorite
+                                : Icons.favorite_border,
+                            color:
+                                favoritesProvider.isFavorite(widget.product.id)
+                                    ? Colors.red
+                                    : Colors.black,
+                          ),
+                          onPressed: () => favoritesProvider
+                              .toggleFavorite(widget.product.id),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
 
             // Product Details

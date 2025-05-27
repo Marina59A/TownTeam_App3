@@ -5,6 +5,7 @@ import 'package:townteam_app/common/models/cart_provider.dart';
 import 'package:townteam_app/common/models/nav_provider.dart';
 import 'package:townteam_app/common/models/product.dart';
 import 'package:townteam_app/features/auth/presentation/view/login_page.dart';
+import 'package:townteam_app/features/product/presentaion/view/product_details_page.dart';
 
 class ProductPage extends StatefulWidget {
   // final String category;
@@ -144,18 +145,47 @@ class _ProductPageState extends State<ProductPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(15),
-                ),
-                image: DecorationImage(
-                  image: productData['image'] != null &&
+            child: GestureDetector(
+              onTap: () {
+                var product = Product(
+                  id: productData.id,
+                  name: productData['title'] ?? 'No Title',
+                  originalPrice: productData['price'] != null
+                      ? productData['price']['amount']?.toDouble() ?? 0.0
+                      : 0.0,
+                  discountedPrice: productData['price'] != null
+                      ? productData['price']['amount']?.toDouble() ?? 0.0
+                      : 0.0,
+                  imageUrl: productData['image'] != null &&
                           productData['image']['src'] != null
-                      ? NetworkImage('https:${productData['image']['src']}')
-                      : const AssetImage('assets/placeholder_image.png')
-                          as ImageProvider,
-                  fit: BoxFit.cover,
+                      ? 'https:${productData['image']['src']}'
+                      : '',
+                  category: widget.title,
+                );
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ProductDetailsPage(
+                      product: product,
+                      imageUrl: product.imageUrl,
+                    ),
+                  ),
+                );
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(15),
+                  ),
+                  image: DecorationImage(
+                    image: productData['image'] != null &&
+                            productData['image']['src'] != null
+                        ? NetworkImage('https:${productData['image']['src']}')
+                        : const AssetImage('assets/placeholder_image.png')
+                            as ImageProvider,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ),

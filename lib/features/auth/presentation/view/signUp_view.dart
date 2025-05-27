@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:townteam_app/common/services/git_it_service.dart';
 import 'package:townteam_app/features/auth/domain/repos/auth_repo.dart';
 import 'package:townteam_app/features/auth/presentation/cuibts/signup_cubit/signup_cubit.dart';
-import 'package:townteam_app/features/auth/presentation/widgets/signup_body.dart';
 import 'package:townteam_app/features/auth/presentation/widgets/signup_view_body_bloc_consumr.dart';
 
 class SignupView extends StatefulWidget {

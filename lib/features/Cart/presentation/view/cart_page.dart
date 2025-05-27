@@ -67,55 +67,143 @@ class _CartPageState extends State<CartPage> {
 
           return Column(
             children: [
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: () {},
+                        icon: const Icon(Icons.card_giftcard,
+                            color: Colors.black54),
+                        label: const Text('Gift Card',
+                            style: TextStyle(color: Colors.black54)),
+                        style: OutlinedButton.styleFrom(
+                          side: const BorderSide(color: Colors.black12),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8)),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: () {},
+                        icon: const Icon(Icons.discount_outlined,
+                            color: Colors.black54),
+                        label: const Text('Use Discount Code',
+                            style: TextStyle(color: Colors.black54)),
+                        style: OutlinedButton.styleFrom(
+                          side: const BorderSide(color: Colors.black12),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8)),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               Expanded(
                 child: ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   itemCount: cartItems.length,
                   itemBuilder: (context, index) {
                     final item = cartItems[index];
                     return Card(
-                      margin: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                      child: ListTile(
-                        leading: Container(
-                          width: 60,
-                          height: 60,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: NetworkImage(item.product.imageUrl),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        title: Text(
-                          item.product.name,
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        subtitle: Text(
-                          'EGP ${item.product.discountedPrice.toStringAsFixed(2)}',
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
+                      margin: const EdgeInsets.symmetric(vertical: 8),
+                      elevation: 1,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            IconButton(
-                              icon: const Icon(Icons.remove),
-                              onPressed: () {
-                                cartProvider.decreaseQuantity(item.product);
-                              },
+                            Container(
+                              width: 80,
+                              height: 100,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                image: DecorationImage(
+                                  image: NetworkImage(item.product.imageUrl),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
                             ),
-                            Text(
-                              '${item.quantity}',
-                              style: const TextStyle(fontSize: 16),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    item.product.name,
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    '${item.product.selectedColor} / ${item.product.selectedSize}',
+                                    style: const TextStyle(
+                                        color: Colors.grey, fontSize: 14),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Row(
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                                color: Colors.black12),
+                                            borderRadius:
+                                                BorderRadius.circular(4)),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            IconButton(
+                                              icon: const Icon(Icons.remove,
+                                                  size: 20),
+                                              onPressed: () {
+                                                cartProvider.decreaseQuantity(
+                                                    item.product);
+                                              },
+                                            ),
+                                            Text(
+                                              '${item.quantity}',
+                                              style:
+                                                  const TextStyle(fontSize: 16),
+                                            ),
+                                            IconButton(
+                                              icon: const Icon(Icons.add,
+                                                  size: 20),
+                                              onPressed: () {
+                                                cartProvider.increaseQuantity(
+                                                    item.product);
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      const Spacer(),
+                                      Text(
+                                        'EGP ${item.product.discountedPrice.toStringAsFixed(2)}',
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                             IconButton(
-                              icon: const Icon(Icons.add),
+                              icon: const Icon(Icons.delete_outline,
+                                  color: Colors.red),
                               onPressed: () {
-                                cartProvider.increaseQuantity(item.product);
+                                cartProvider.removeItem(item.product.id);
                               },
                             ),
                           ],
@@ -125,25 +213,31 @@ class _CartPageState extends State<CartPage> {
                   },
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 4,
-                      offset: Offset(0, -2),
-                    ),
-                  ],
-                ),
+              const Divider(height: 1, color: Colors.black12),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.edit_outlined,
+                            size: 20, color: Colors.black54),
+                        const SizedBox(width: 8),
+                        const Text('Add an Order Note',
+                            style:
+                                TextStyle(fontSize: 16, color: Colors.black54)),
+                        const Spacer(),
+                        const Icon(Icons.keyboard_arrow_up,
+                            size: 20, color: Colors.black54),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text(
-                          'Total:',
+                          'SUBTOTAL:',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -151,10 +245,10 @@ class _CartPageState extends State<CartPage> {
                         ),
                         Text(
                           'EGP ${cartProvider.totalAmount.toStringAsFixed(2)}',
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: Theme.of(context).primaryColor,
+                            color: Colors.black,
                           ),
                         ),
                       ],
@@ -175,18 +269,16 @@ class _CartPageState extends State<CartPage> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
-                        ),
-                        child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 16),
-                          child: Text(
-                            authProvider.isLoggedIn
-                                ? 'CHECKOUT'
-                                : 'LOGIN TO CHECKOUT',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
+                        ),
+                        child: Text(
+                          authProvider.isLoggedIn
+                              ? 'CHECKOUT'
+                              : 'LOGIN TO CHECKOUT',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
                           ),
                         ),
                       ),

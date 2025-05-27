@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:townteam_app/common/models/auth_provider.dart';
 import 'package:townteam_app/common/models/cart_provider.dart';
+import 'package:townteam_app/common/models/favorites_provider.dart';
 import 'package:townteam_app/common/models/language_provider.dart';
 import 'package:townteam_app/common/models/nav_provider.dart';
 import 'package:townteam_app/common/services/git_it_service.dart';
@@ -15,7 +16,8 @@ import 'package:townteam_app/features/homepage/presentation/view/home_page.dart'
 import 'package:townteam_app/features/product/presentaion/view/product_page.dart';
 import 'package:townteam_app/features/splashScreen/presentation/view/landing_page.dart';
 import 'package:townteam_app/features/auth/presentation/view/login_page.dart';
-import 'package:townteam_app/features/payment/presentation/view/payment_page.dart';
+import 'package:townteam_app/features/account/presentation/view/my_account_page.dart';
+import 'package:townteam_app/features/account/presentation/view/my_favorites_page.dart';
 import 'package:townteam_app/l10n/app_localizations.dart';
 import 'firebase_options.dart';
 
@@ -37,6 +39,7 @@ class TownTeamApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => CartProvider()),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => LanguageProvider()),
+        ChangeNotifierProvider(create: (_) => FavoritesProvider()),
       ],
       child: Consumer<LanguageProvider>(
         builder: (context, languageProvider, child) {
@@ -65,6 +68,8 @@ class TownTeamApp extends StatelessWidget {
               SignupView.id: (context) => const SignupView(),
               MensCatogry.id: (context) => const MensCatogry(),
               KidsCatogry.id: (context) => const KidsCatogry(),
+              MyAccountPage.id: (context) => const MyAccountPage(),
+              MyFavoritesPage.id: (context) => const MyFavoritesPage(),
             },
             initialRoute: '/landing',
             onGenerateRoute: (settings) {

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:townteam_app/common/models/auth_provider.dart';
 import 'package:townteam_app/common/models/language_provider.dart';
+import 'package:townteam_app/features/account/presentation/view/my_account_page.dart';
 import 'package:townteam_app/features/auth/presentation/view/login_page.dart';
 import 'package:townteam_app/l10n/app_localizations.dart';
 // import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -11,6 +13,8 @@ class CustomDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final authProvider = Provider.of<AuthProvider>(context);
+
     return Drawer(
       backgroundColor: Colors.black,
       child: Column(
@@ -88,20 +92,52 @@ class CustomDrawer extends StatelessWidget {
                 _buildDrawerItem(
                   icon: Icons.person_outline,
                   title: l10n.MY_ACCOUNT,
-                  onTap: () => Navigator.pushNamed(context, LoginPage.id),
+                  onTap: () {
+                    if (authProvider.isLoggedIn) {
+                      Navigator.pushNamed(context, MyAccountPage.id);
+                    } else {
+                      Navigator.pushNamed(context, LoginPage.id);
+                    }
+                  },
                 ),
-                _buildExpandableDrawerItem(
-                  icon: Icons.support_agent,
+                _buildDrawerItem(
+                  icon: Icons.headset_mic_outlined,
                   title: l10n.CUSTOMER_SERVICE,
-                  children: [
-                    _buildSubDrawerItem(title: l10n.CONTACT_US, onTap: () {}),
-                    _buildSubDrawerItem(
-                        title: l10n.HOW_TO_PURCHASE, onTap: () {}),
-                    _buildSubDrawerItem(
-                      title: l10n.DELIVERY_AND_RETURNS,
-                      onTap: () {},
-                    ),
-                  ],
+                  onTap: () {},
+                ),
+                _buildDrawerItem(
+                  icon: Icons.contact_support_outlined,
+                  title: l10n.CONTACT_US,
+                  onTap: () {},
+                ),
+                _buildDrawerItem(
+                  icon: Icons.shopping_bag_outlined,
+                  title: l10n.HOW_TO_PURCHASE,
+                  onTap: () {},
+                ),
+                _buildDrawerItem(
+                  icon: Icons.local_shipping_outlined,
+                  title: l10n.DELIVERY_AND_RETURNS,
+                  onTap: () {},
+                ),
+                _buildDrawerItem(
+                  icon: Icons.facebook,
+                  title: l10n.FACEBOOK,
+                  onTap: () {},
+                ),
+                _buildDrawerItem(
+                  icon: Icons.email_outlined,
+                  title: l10n.EMAIL,
+                  onTap: () {},
+                ),
+                _buildDrawerItem(
+                  icon: Icons.language,
+                  title: l10n.Language,
+                  onTap: () {
+                    final languageProvider =
+                        Provider.of<LanguageProvider>(context, listen: false);
+                    languageProvider.toggleLanguage();
+                  },
                 ),
               ],
             ),
@@ -171,35 +207,10 @@ class CustomDrawer extends StatelessWidget {
   }) {
     return ListTile(
       leading: Icon(icon, color: Colors.white),
-      title: Text(title,
-          style: const TextStyle(color: Colors.white, fontSize: 16)),
-      onTap: onTap,
-    );
-  }
-
-  Widget _buildExpandableDrawerItem({
-    required IconData icon,
-    required String title,
-    required List<Widget> children,
-  }) {
-    return ExpansionTile(
-      leading: Icon(icon, color: Colors.white),
-      title: Text(title,
-          style: const TextStyle(color: Colors.white, fontSize: 16)),
-      iconColor: Colors.white,
-      collapsedIconColor: Colors.white,
-      children: children,
-    );
-  }
-
-  Widget _buildSubDrawerItem({
-    required String title,
-    required VoidCallback onTap,
-  }) {
-    return ListTile(
-      contentPadding: const EdgeInsets.only(left: 72),
-      title: Text(title,
-          style: const TextStyle(color: Colors.white, fontSize: 14)),
+      title: Text(
+        title,
+        style: const TextStyle(color: Colors.white),
+      ),
       onTap: onTap,
     );
   }

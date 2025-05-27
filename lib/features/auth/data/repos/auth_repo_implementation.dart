@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:townteam_app/common/errors/exceptions.dart';
 import 'package:townteam_app/common/errors/failures.dart';
@@ -12,32 +11,26 @@ class AuthRepoImplementation extends AuthRepo {
   final FirebaseAuthService firebaseAuthService;
 
   AuthRepoImplementation({required this.firebaseAuthService});
+
   @override
   Future<Either<Failure, UserEntity>> createUserWithEmailAndPassword(
-      // String name,
-      // String surname,
-      String email,
-      String password,
-      String confirmPassword) async {
+    String email,
+    String password,
+    String confirmPassword,
+  ) async {
     try {
-      var user = await firebaseAuthService.createUserWithEmailAndPassword(
-        email: email.trim(),
+      final user = await firebaseAuthService.createUserWithEmailAndPassword(
+        email: email,
         password: password,
         confirmPassword: confirmPassword,
       );
-      print(user);
-      return right(
-        UserModel.fromFirebaseUser(user),
-      );
+
+      return right(UserModel.fromFirebaseUser(user));
     } on CustomException catch (e) {
       return left(ServerFailure(e.message));
     } catch (e) {
-      log('Exception in firebaseAuthService.createUserWithEmailAndPassword:${e.toString()}');
-      return left(
-        ServerFailure(
-          'An error occured. Please try again later.',
-        ),
-      );
+      log('Exception in AuthRepoImplementation.createUserWithEmailAndPassword: ${e.toString()}');
+      return left(ServerFailure('An error occurred. Please try again later.'));
     }
   }
 
@@ -47,22 +40,17 @@ class AuthRepoImplementation extends AuthRepo {
     String password,
   ) async {
     try {
-      var user = await firebaseAuthService.signInWithEmailAndPassword(
+      final user = await firebaseAuthService.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      return right(
-        UserModel.fromFirebaseUser(user),
-      );
+
+      return right(UserModel.fromFirebaseUser(user));
     } on CustomException catch (e) {
       return left(ServerFailure(e.message));
     } catch (e) {
-      log('Exception in firebaseAuthService.signInWithEmailAndPassword:${e.toString()}');
-      return left(
-        ServerFailure(
-          'An error occured. Please try again later.',
-        ),
-      );
+      log('Exception in AuthRepoImplementation.signInWithEmailAndPassword: ${e.toString()}');
+      return left(ServerFailure('An error occurred. Please try again later.'));
     }
   }
 }
